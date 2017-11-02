@@ -1,11 +1,8 @@
 #Chalse Okorom
 #LING 441 Homework 6
 
-import sys
 from math import log10
 from hmm import example_model, Node, print_graph
-
-print(sys.version)
 
 #1
 class Tagger (object):
