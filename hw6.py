@@ -1,5 +1,5 @@
 #Chalse Okorom
-#LING 441 Homework 6
+#LING 441 - Homework 6
 
 from math import log10
 from hmm import example_model, Node, print_graph
@@ -9,34 +9,22 @@ class Tagger (object):
 	def __init__(self, hmm_model):
 		self.model = hmm_model
 	
-	def reset(list_of_words):
+	def reset(self, list_of_words):
 		self.words = list_of_words
 		self.nodes = []
 
 
 #2
-def new_node(i, word, pos, prev_nodes): #is index right? put at end of list
-	return Node(tagger.nodes[i].index, i, word, pos, prev_nodes)
-	
-def build_graph():
-	pass
+	def new_node(self, i, word, pos, prev_nodes):
+		return Node(self.nodes[i].index, i, word, pos, prev_nodes)
 
-	
-#3
-def edge_score(node_a, node_b):
-	pass
-
-def score_node(node):
-	pass
-
-def score_graph():
-	pass
-	
-
-#4
-def unwind():
-	pass
-	
-
-#5
-#tagger.__call__(list)
+	def build_graph(self):
+		left_boundary = Node(0, -1, None, None, [])
+		graph = []
+		for w in self.words: #how to get words??
+			graph.append(self.model.parts(w))
+		
+tagger = Tagger(example_model)
+tagger.build_graph()
+print_graph(tagger.nodes)
+			
