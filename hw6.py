@@ -2,7 +2,7 @@
 #LING 441 - Homework 6
 
 from math import log10
-from hmm import example_model, Node, print_graph
+from hmm import example_model, print_graph, Node
 
 #1
 class Tagger (object):
@@ -13,18 +13,57 @@ class Tagger (object):
 		self.words = list_of_words
 		self.nodes = []
 
-
 #2
 	def new_node(self, i, word, pos, prev_nodes):
-		return Node(self.nodes[i].index, i, word, pos, prev_nodes)
+		nd = Node(nodes[i].index, i, word, pos, prev_nodes)
+		self.nodes.append(nd)
+		return nd
 
 	def build_graph(self):
-		left_boundary = Node(0, -1, None, None, [])
-		graph = []
-		for w in self.words: #how to get words??
-			graph.append(self.model.parts(w))
+			left_boundary = Node(0, -1, None, None, [])
+			self.nodes.append(left_boundary)
+			
+			ind = 1
+			prev_nodes = [left_boundary]
+			for idx, w in enumerate(self.words):
+				count = 0
+				for pos in self.model.parts(w):
+					self.nodes.append(Node(ind, idx, w, pos, prev_nodes))
+					ind += 1
+					count += 1
+				
+				prev_nodes = self.nodes[-count:]
+					
+			right_boundary = Node(ind, len(self.words), None, None, prev_nodes)
+			self.nodes.append(right_boundary)
+					
+#3
+	def edge_score(self, prv, nxt):
+		#up to prev node
+		result = prv.score + self.model.ecost(prv.pos, prv.word)
 		
+		#find last/next node
+		for nd in nxt.prev_nodes:
+			print(nd)
+		return result
+
+#Tests
+print("#1 tests: ")
 tagger = Tagger(example_model)
+print(tagger.model.tprob(None, 'NNS'))
+tagger.reset(['dogs', 'bark', 'often'])
+print(tagger.words, '\n')
+
+print('\n#2 tests: ')
 tagger.build_graph()
 print_graph(tagger.nodes)
-			
+
+print('\n\n', '#3 tests: ')
+(n1, n2, n3) = tagger.nodes[1:4]
+n1.score = .1
+n2.score = .9
+print('edge_score(n1,n3) =',tagger.edge_score(n1, n3))
+print('edge_score(n2,n3) =', tagger.edge_score(n2,n3))
+#print('\nscore_node(n3) =', tagger.score_node(n3))
+#print('n3.best_prev =', n3.best_prev)
+ 
