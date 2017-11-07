@@ -49,7 +49,6 @@ class Tagger (object):
 	def score_node(self, node):
 		tmp = 10000
 		for nd in node.prev_nodes:
-			print(nd.score)
 			if (tmp > self.edge_score(nd, node)):
 				tmp = self.edge_score(nd, node)
 				node.best_prev = nd
@@ -61,6 +60,16 @@ class Tagger (object):
 
 		for nd in valid_nodes:
 			nd.score = self.score_node(nd)
+
+#4
+	def unwind(self):
+		current_node = self.nodes[len(self.nodes) - 1] #right boundary node
+		results = []
+		while (current_node != self.nodes[1]):
+			current_node = current_node.best_prev
+			results.append(current_node.pos)
+		return list(reversed(results))
+
 
 
 #Tests
@@ -86,3 +95,6 @@ tagger.score_graph()
 print('tagger.score_graph():')
 print_graph(tagger.nodes)
  
+
+print ('\n\n', "#4 tests")
+print(tagger.unwind())
