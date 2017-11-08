@@ -14,7 +14,7 @@ class Tagger (object):
 		self.nodes = []
 
 #2
-	def new_node(self, i, word, pos, prev_nodes): #nodes not defined
+	def new_node(self, i, word, pos, prev_nodes):
 		index = len(self.nodes)
 		nd = Node(index, i, word, pos, prev_nodes)
 		self.nodes.append(nd)
@@ -45,7 +45,9 @@ class Tagger (object):
 
 		#find transmission cost
 		next_score = self.model.tcost(prv.pos, nxt.pos)
-		return result + next_score
+		if (next_score < 1):
+			result += next_score
+		return result
 	
 	def score_node(self, node):
 		tmp = 10000
@@ -73,13 +75,7 @@ class Tagger (object):
 		return list(reversed(results))
 
 #5
-	def __call__(self, list_of_words = 'no input given'): #Error on some model + sentence combinations
-		if list_of_words == 'no input given':
-			list_of_words = []
-			for nd in self.nodes:
-				if nd.word and (nd.word not in list_of_words):
-					list_of_words.append(nd.word)
-					
+	def __call__(self, list_of_words): #Error on some model + sentence combinations					
 		pos = self.unwind()
 		return list(zip(list_of_words, pos))
 
@@ -113,5 +109,7 @@ print(tagger.unwind())
 
 print('\n\n', "#5 tests")
 print(tagger.__call__(['dogs', 'bark', 'often']))
-print(tagger.__call__())
+print(tagger(['dogs', 'bark', 'often']))
+
+print('\nNode new: ', tagger.new_node(3, 'often', 'RB', tagger.nodes))
 
