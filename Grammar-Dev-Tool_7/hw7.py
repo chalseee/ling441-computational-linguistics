@@ -16,7 +16,7 @@ class GDev (object):
 
     def load_sents(self):
         #using a textfile instead of a .sents? won't let me make a .sents file?
-        file = open(str(self.name + '.sents'))
+        file = open(str(self.name + '.sents.txt'))
         self.sents = []
         for line in file:
             if line[0] == '*':
@@ -34,7 +34,7 @@ class GDev (object):
     def regress(self):
         for s in self.sents: 
             prediction = type(self.parses(s[1])) == tree.Tree
-            #print(self.parses(s[1]))
+            print(self.parses(s[1]))
             if prediction != s[0]:
                 if s[0] == False:
                     print ("!!" + " " + "*" + s[1])
