@@ -16,13 +16,13 @@ class GDev (object):
 
     def load_sents(self):
         #using a textfile instead of a .sents? won't let me make a .sents file?
-        file = open(str(self.name + '.sents.txt'))
+        file = open(str(self.name + '.sents'))
         self.sents = []
         for line in file:
             if line[0] == '*':
                 self.sents.append((False, line.strip()[1:]))
             else:
-                self.sents.append((True, line.strip()))                                                                                                                                                                                                                                                                                                        
+                self.sents.append((True, line.strip()))     
     
     def parses(self, sentence):
         words = tokenize.word_tokenize(sentence)
@@ -34,6 +34,7 @@ class GDev (object):
     def regress(self):
         for s in self.sents: 
             prediction = type(self.parses(s[1])) == tree.Tree
+            #print(self.parses(s[1]))
             if prediction != s[0]:
                 if s[0] == False:
                     print ("!!" + " " + "*" + s[1])
@@ -50,11 +51,9 @@ class GDev (object):
         self.regress()
             
 
-gd = GDev('g1')
+gd = GDev('g2')
 gd.load_grammar()
-gd.reload()
-print(gd.parses("Mary walked the dog"))
-print(gd.parses("Gorp glimped"))
 gd.load_sents()
+gd.reload()
 gd.regress()
-gd.__call__()
+#test-- is my grammar remotely ok?
