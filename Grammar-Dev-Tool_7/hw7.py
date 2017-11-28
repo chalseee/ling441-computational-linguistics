@@ -12,8 +12,15 @@ class GDev (object):
         
     def reload(self):
         self.load_grammar()
-        self.parser = ChartParser(self.grammar)  
-
+        self.parser = ChartParser(self.grammar)   
+    
+    def parse(self, sentence):
+        words = tokenize.word_tokenize(sentence)
+        try:
+            return list(self.parser.parse(words))[0]
+        except:
+            return None  
+    
     def load_sents(self):
         #using a textfile instead of a .sents? won't let me make a .sents file?
         file = open(str(self.name + '.sents.txt'))
@@ -22,29 +29,28 @@ class GDev (object):
             if line[0] == '*':
                 self.sents.append((False, line.strip()[1:]))
             else:
-                self.sents.append((True, line.strip()))     
+                self.sents.append((True, line.strip()))    
+                
+    def parses(self):
+        for s in self.sents:
+            print('\n' + s[1])
+            print(self.parse(s[1]))
     
-    def parses(self, sentence):
-        words = tokenize.word_tokenize(sentence)
-        try:
-            return list(self.parser.parse(words))[0]
-        except:
-            return None  
-        
     def regress(self):
         for s in self.sents: 
-            prediction = type(self.parses(s[1])) == tree.Tree
-            print(self.parses(s[1]))
-            if prediction != s[0]:
-                if s[0] == False:
-                    print ("!!" + " " + "*" + s[1])
+            prediction = type(self.parse(s[1])) == tree.Tree
+            good = s[0]
+            
+            if prediction == good:
+                if good:
+                    print ("  " + " " + " " + s[1])
                 else:
-                    print ("!!" + " " + " " + s[1])
-            else:
-                if s[0] == False:
                     print ("  " + " " + "*" + s[1])
+            else:
+                if good:
+                    print ("!!" + " " + " " + s[1])
                 else:
-                    print ("  " + " " + " " +  s[1])
+                    print ("!!" + " " + "*" + s[1])
                     
     def __call__(self):
         self.reload()
@@ -53,7 +59,8 @@ class GDev (object):
 
 gd = GDev('g2')
 gd.load_grammar()
-gd.load_sents()
 gd.reload()
+gd.load_sents()
+gd.parses()
 gd.regress()
-#test-- is my grammar remotely ok?
+gd()
