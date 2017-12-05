@@ -108,15 +108,23 @@ class Parser (object):
         # No return value
         # Side effect: calls create_node
         for p in self.chart.jtab[node.i]:
-            r = self.grammar.productions(rhs='')[0]
-            if r.rhs()==p.cat and r.rhs()==node.cat():
-                self.create_node(r, [p.tree, node.tree], p.i, node.j)
-            #print('extend edges node: ', r, node.cat, p.cat)
+            if(p.j == node.i):
+                print('extend_edges():', p)
+                rule = self.grammar.productions(rhs=p.cat)[0]
+                try:
+                    self.create_node(rule, [p.tree, node.tree], p.i, node.j)
+                except:
+                    return
             
     def choose_node (self):
         # Returns a Node or None
         # Side effect: may delete a node from new_nodes
-        pass
+        i = 0
+        for k in self.new_nodes:
+            if k.i > i:
+                i = k.i            #should be right, fix after extend_edges() is correct
+        del self.new_nodes[i]
+        return self.new_nodes
 
     def run (self):
         # No return value
@@ -126,7 +134,8 @@ class Parser (object):
     def __call__ (self, words):
         # Return value: a Tree or None
         # Side effect: calls reset, run
-        pass
+        self.reset()
+        self.run()
     
 
 g = PCFG.fromstring(open('g2n.pcfg').read())
@@ -158,6 +167,5 @@ parser.new_nodes[0].tree
 
 parser.shift(2)
 node = parser.new_nodes[1]
-print("new node: ", node)
 parser.extend_edges(node)
 print(parser.new_nodes[-1].tree)
