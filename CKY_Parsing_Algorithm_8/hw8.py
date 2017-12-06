@@ -73,7 +73,6 @@ class Parser (object):
         # Side effect: may append a node to new_nodes
         cat = rule.lhs()
         node = self.chart.intern(cat, i, j)
-        new_logprob = 0
         
         if type(children) == type(str()):
             new_logprob = rule.logprob()
@@ -129,24 +128,31 @@ class Parser (object):
     def choose_node (self):
         # Returns a Node or None
         # Side effect: may delete a node from new_nodes
-        #i = 0
-        #for k in self.new_nodes:
-         #   if k.i > i:
-         #       i = k.i            #should be right, fix after extend_edges() is correct
-        #del self.new_nodes[i]
-        #return self.new_nodes
-        pass
+        i = 0
+        for k in self.new_nodes:
+            if k.i > i:
+                i = k.i            
+        result = self.new_nodes[i]
+        del self.new_nodes[i]
+        return result
 
     def run (self):
         # No return value
         # Side effect: calls shift, choose_node, extend_edges
-        pass
-
+        ptr = 0
+        while True:
+            if ptr == (len(self.words) - 1):
+                break
+            else:
+                if self.new_nodes != []:
+                    self.extend_edges(self.choose_node())
+                else:
+                    ptr += 1
+                    self.shift(ptr)
+                
     def __call__ (self, words):
         # Return value: a Tree or None
         # Side effect: calls reset, run
-        #self.reset()
-        #self.run()
         pass
     
 
@@ -171,4 +177,6 @@ parser.create_node(r, ['the'], 0, 1)
 parser.shift(2)
 node = parser.new_nodes[1]
 parser.extend_edges(node)
-print(parser.new_nodes[-1].tree)
+
+parser.reset('Mary walked the cat in the park'.split())
+parser.run()
