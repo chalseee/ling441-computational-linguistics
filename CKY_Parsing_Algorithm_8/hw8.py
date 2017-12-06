@@ -39,7 +39,7 @@ class Chart (object):
             else:
                 self.jtab[j] = []
                 self.jtab[j].append(new_node)
-        return new_node
+        return self.xijtab[cat, i, j]
 
     def get (self, cat, i, j):
         return self.xijtab.get((cat, i, j))
@@ -112,8 +112,9 @@ class Parser (object):
         # No return value
         # Side effect: calls create_node
         w = self.words[j-1]
-        rule = self.grammar.productions(rhs=w)[0]
-        self.create_node(rule, w, j-1, j)
+        rule = self.grammar.productions(rhs=w)
+        for r in rule:
+            self.create_node(r, w, j-1, j)
 
     def extend_edges (self, node):
         # No return value
@@ -141,19 +142,21 @@ class Parser (object):
         # Side effect: calls shift, choose_node, extend_edges
         ptr = 0
         while True:
-            if ptr == (len(self.words) - 1):
+            if self.new_nodes != []:
+                self.extend_edges(self.choose_node())
+            elif ptr == (len(self.words) - 1):
                 break
             else:
-                if self.new_nodes != []:
-                    self.extend_edges(self.choose_node())
-                else:
-                    ptr += 1
-                    self.shift(ptr)
-                
+                ptr+=1
+                self.shift(ptr)
+
     def __call__ (self, words):
         # Return value: a Tree or None
         # Side effect: calls reset, run
-        pass
+        self.reset(words)
+        self.run()
+        #something else
+        
     
 
 g = PCFG.fromstring(open('g2n.pcfg').read())
@@ -178,5 +181,6 @@ parser.shift(2)
 node = parser.new_nodes[1]
 parser.extend_edges(node)
 
-parser.reset('Mary walked the cat in the park'.split())
-parser.run()
+
+#parser.reset('Mary walked the cat in the park'.split())
+#parser.run()
