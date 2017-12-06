@@ -49,7 +49,7 @@ class Chart (object):
         try:
             return self.jtab[j]
         except:
-            return None
+            return []
 
 
 class Parser (object):
@@ -73,29 +73,40 @@ class Parser (object):
         # Side effect: may append a node to new_nodes
         cat = rule.lhs()
         node = self.chart.intern(cat, i, j)
+        new_logprob = 0
         
-        if node.tree == None:
-            if self.new_nodes == None:
-                self.new_nodes = []
-            self.new_nodes.append(node)
-            
-        if len(children)==1 and type(children[0])==type(' '):
+        if type(children) == type(str()):
             new_logprob = rule.logprob()
-            #print('len1 child')
         else:
-            #print('lemgthy child')
-            new_logprob = rule.logprob() #add correct ish here      
-            for c in [children]:
-                r = self.grammar.productions(rhs=c)[0]
-                new_logprob += r.logprob()
+            for x in range(len(children)):
+                new_logprob = rule.logprob()
+                if (type(children[x])) == type(str()):
+                    r = self.grammar.productions(rhs=children[x])
+                    for y in r:
+                        new_logprob += y.logprob()
+                else:
+                    for c in children[x]:
+                        print('ffff', c)
+                    #self.grammar.productions(rhs=children[x])
+                    
+                print("child: ", children[x])
+                    
+            #subtree-ish isn't working
             
-        if (new_logprob > rule.logprob()) or node.tree==None:
-            node.tree = Tree(cat, [children], logprob=new_logprob) #test if correct vars are used
+        if (node.tree==None) or (new_logprob > node.tree.logprob()):
+            node.tree = Tree(cat, [children], logprob=new_logprob)
+        
+        if self.new_nodes==None:
+           self.new_nodes = []
+           self.new_nodes.append(node)
+        else:
+           self.new_nodes.append(node)
                 
         if self.trace:
             print('new', node)
         else:
             print('old', node)
+            
                 
     def shift (self, j):
         # No return value
@@ -109,22 +120,21 @@ class Parser (object):
         # Side effect: calls create_node
         for p in self.chart.jtab[node.i]:
             if(p.j == node.i):
-                print('extend_edges():', p)
-                rule = self.grammar.productions(rhs=p.cat)[0]
-                try:
-                    self.create_node(rule, [p.tree, node.tree], p.i, node.j)
-                except:
-                    return
+                rule = self.grammar.productions(rhs=p.cat)
+                for r in rule:
+                    if r.rhs()[1] == node.cat:
+                        self.create_node(r, [p.tree, node.tree], p.i, node.j)
             
     def choose_node (self):
         # Returns a Node or None
         # Side effect: may delete a node from new_nodes
-        i = 0
-        for k in self.new_nodes:
-            if k.i > i:
-                i = k.i            #should be right, fix after extend_edges() is correct
-        del self.new_nodes[i]
-        return self.new_nodes
+        #i = 0
+        #for k in self.new_nodes:
+         #   if k.i > i:
+         #       i = k.i            #should be right, fix after extend_edges() is correct
+        #del self.new_nodes[i]
+        #return self.new_nodes
+        pass
 
     def run (self):
         # No return value
@@ -134,38 +144,30 @@ class Parser (object):
     def __call__ (self, words):
         # Return value: a Tree or None
         # Side effect: calls reset, run
-        self.reset()
-        self.run()
+        #self.reset()
+        #self.run()
+        pass
     
 
 g = PCFG.fromstring(open('g2n.pcfg').read())
-
 r = g.productions(lhs=NT('Det'))[0]
-
 t = Tree(r.lhs(), r.rhs(), logprob=r.logprob())
 
 node = Node(r.lhs(), 0, 1)
 
 chart = Chart()
-chart.intern(NT('Det'), 0, 1)
-chart.intern(NT('V'), 0, 1)
-chart.intern(NT('VP'), 1, 3)
-
+chart.xijtab[NT('Det'), 0, 1] = node
 node = chart.intern(NT('Det'), 0, 1)
-
-chart.ending_at(1)
-chart.ending_at(2)
+chart.intern(NT('V'), 0, 1)
 
 parser = Parser(g)
+parser.chart.intern(NT('NP'), 0, 1)
+parser.reset("the cat".split())
 
 parser.trace = True
 parser.create_node(r, ['the'], 0, 1)
 
-parser.reset('the cat'.split())
-parser.shift(1)
-parser.new_nodes[0].tree
-
 parser.shift(2)
 node = parser.new_nodes[1]
 parser.extend_edges(node)
-print(parser.new_nodes[-1].tree)
+
