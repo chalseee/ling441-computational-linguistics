@@ -86,15 +86,16 @@ class Parser (object):
                         new_logprob += y.logprob()
                 else:
                     for c in children[x]:
-                        print('ffff', c)
-                    #self.grammar.productions(rhs=children[x])
-                    
-                print("child: ", children[x])
-                    
-            #subtree-ish isn't working
+                        if type(c) == type(list()):
+                            c = c[0]
+                        r = self.grammar.productions(rhs=c)
+                        for y in r:
+                            new_logprob += y.logprob()
             
         if (node.tree==None) or (new_logprob > node.tree.logprob()):
-            node.tree = Tree(cat, [children], logprob=new_logprob)
+            if type(children) == type(str()):
+                children = [children]
+            node.tree = Tree(cat, children, logprob=new_logprob)
         
         if self.new_nodes==None:
            self.new_nodes = []
@@ -170,4 +171,4 @@ parser.create_node(r, ['the'], 0, 1)
 parser.shift(2)
 node = parser.new_nodes[1]
 parser.extend_edges(node)
-
+print(parser.new_nodes[-1].tree)
