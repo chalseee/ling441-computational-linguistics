@@ -119,7 +119,7 @@ class Parser (object):
     def extend_edges (self, node):
         # No return value
         # Side effect: calls create_node
-        for p in self.chart.jtab[node.i]:
+        for p in self.new_nodes:
             if(p.j == node.i):
                 rule = self.grammar.productions(rhs=p.cat)
                 for r in rule:
@@ -129,23 +129,28 @@ class Parser (object):
     def choose_node (self):
         # Returns a Node or None
         # Side effect: may delete a node from new_nodes
+        if self.new_nodes == [] or self.new_nodes == None:
+            return None
+        
         i = 0
-        for k in self.new_nodes:
-            if k.i > i:
-                i = k.i            
-        result = self.new_nodes[i]
+        for idx, node in enumerate(self.new_nodes):
+            if node.i > i:
+                i = idx
+        chosen_node = self.new_nodes[i]
         del self.new_nodes[i]
-        return result
+        return chosen_node
 
     def run (self):
         # No return value
         # Side effect: calls shift, choose_node, extend_edges
         ptr = 0
         while True:
-            if self.new_nodes != []:
-                self.extend_edges(self.choose_node())
-            elif ptr == (len(self.words) - 1):
+            if (ptr == len(self.words)):
                 break
+            
+            if self.new_nodes != []:
+                nd = self.choose_node()
+                self.extend_edges(nd) 
             else:
                 ptr+=1
                 self.shift(ptr)
@@ -155,32 +160,13 @@ class Parser (object):
         # Side effect: calls reset, run
         self.reset(words)
         self.run()
-        #something else
-        
     
+        for node in self.new_nodes:
+            if node.cat == 'S':
+                return node.tree    
 
 g = PCFG.fromstring(open('g2n.pcfg').read())
-r = g.productions(lhs=NT('Det'))[0]
-t = Tree(r.lhs(), r.rhs(), logprob=r.logprob())
-
-node = Node(r.lhs(), 0, 1)
-
-chart = Chart()
-chart.xijtab[NT('Det'), 0, 1] = node
-node = chart.intern(NT('Det'), 0, 1)
-chart.intern(NT('V'), 0, 1)
-
 parser = Parser(g)
-parser.chart.intern(NT('NP'), 0, 1)
-parser.reset("the cat".split())
-
 parser.trace = True
-parser.create_node(r, ['the'], 0, 1)
-
-parser.shift(2)
-node = parser.new_nodes[1]
-parser.extend_edges(node)
-
-
-#parser.reset('Mary walked the cat in the park'.split())
-#parser.run()
+parser.reset('Mary walked the cat in the park'.split())
+parser.run()
