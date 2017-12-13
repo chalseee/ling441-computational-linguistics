@@ -1,0 +1,49 @@
+% start S
+
+###  Grammar
+
+S -> 'not' S
+S -> S 'or' S
+S -> S 'and' S
+S -> 'if' S 'then' S
+S -> S 'if' S
+S -> NP VP
+S -> QP VP
+S -> 'there' 'is' Pred
+NP -> Name
+QP -> Q N2
+N2 -> N1 RC
+N2 -> N1
+N1 -> Adj N1
+N1 -> N
+RC -> 'that' VP
+
+VP -> Vi
+VP -> Vt NP
+VP -> 'is' Pred
+VP -> 'is' 'not' Pred
+Pred -> Adj
+Pred -> 'a' N1
+
+###  Lexicon
+
+Q -> 'every'
+Q -> 'a'
+Q -> 'no'
+
+Adj[v=<RED>] -> 'red'
+Adj[v=<BLUE>] -> 'blue'
+Adj[v=<ORANGE>] -> 'orange'
+N[v=<CAT>] -> 'cat'
+N[v=<CAT>] -> 'cats'
+N[v=<DOG>] -> 'dog'
+N[v=<ANIMAL>] -> 'animal'
+Name[v=<FIDO>] -> 'Fido'
+Name[v=<SPOT>] -> 'Spot'
+Name[v=<MAX>] -> 'Max'
+Name[v=<ALLEY>] -> 'Alley'
+Name[v=<BONNIE>] -> 'Bonnie'
+Vi[v=<BARKER>] -> 'barks'
+Vi[v=<BARKER>] -> 'bark'
+Vt[v=<LIKES>] -> 'likes'
+Vt[v=<CHASES>] -> 'chases'

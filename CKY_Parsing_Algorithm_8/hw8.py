@@ -98,9 +98,7 @@ class Parser (object):
         
         if self.new_nodes==None:
            self.new_nodes = []
-           self.new_nodes.append(node)
-        else:
-           self.new_nodes.append(node)
+        self.new_nodes.append(node)
                 
         if self.trace:
             print('new', node)
