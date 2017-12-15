@@ -1,4 +1,3 @@
-
 import nltk, random, os, sys
 from nltk import Model, Valuation, Assignment, Expression
 from nltk.featstruct import unify, TYPE
