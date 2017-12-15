@@ -47,3 +47,26 @@ Vi[v=<BARKER>] -> 'barks'
 Vi[v=<BARKER>] -> 'bark'
 Vt[v=<LIKES>] -> 'likes'
 Vt[v=<CHASES>] -> 'chases'
+
+S[<v=?'not'(S)>] -> 'not'[v=?'not'] S[v=?S]
+S[<v=?S('or')(S)>] -> S[v=?S] 'or'[v=?'or'] S[v=?S]
+S[<v=?S('and')(S)>] -> S[v=?S] 'and'[v=?'and'] S[v=?S]
+S[<v=?'if'(S)('then')(S)>] -> 'if'[v=?'if'] S[v=?S] 'then'[v=?'then'] S[v=?S]
+S[<v=?S('if')(S)>] -> S[v=?S] 'if'[v=?'if'] S[v=?S]
+S[<v=?NP(VP)>] -> NP[v=?NP] VP=[v=?VP]
+S[<v=?QP(VP)>] -> QP[v=?QP] VP[v=?VP]
+S[<v=?'there'('is')(Pred)>] -> 'there'[v=?'there'] 'is'[v=?'is'] Pred[v=?Pred]
+NP[<v=?Name>] -> Name[v=?Name]
+QP[<v=?Q(N2)>] -> Q[v=?Q] N2[v=?N2]
+N2[<v=?N1(RC)>] -> N1[v=?N1] RC[v=?RC]
+N2[<v=?N1>] -> N1[v=?N1]
+N1[<v=?Adj(N1)>] -> Adj[v=?Adj] N1[v=?N1]
+N1[<v=?N>] -> N[v=?N]
+RC[<v=?'that'(VP)>] -> 'that'[v=?'that'] VP[v=?VP]
+
+VP[<v=?Vi>] -> Vi[v=?Vi]
+VP[<v=?Vt(NP)>] -> Vt[v=?Vt] NP[v=?NP]
+VP[<v=?'is'(Pred)>] -> 'is'[v=?'is'] Pred[v=?Pred]
+VP[<v=?'is'('not')(Pred)>] -> 'is'[v=?'is'] 'not'[v=?'not'] Pred[v=?Pred]
+Pred[<v=?Adj>] -> Adj[v=?Adj]
+Pred[<v=?'a'(N1)>] -> 'a'[v=?'a'] N1[v=?N1]
