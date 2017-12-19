@@ -1,38 +1,28 @@
 % start S
-S[v=<?vp(?np)>] -> VP[v=?vp] NP[v=?np]
-VP[v=?vi] -> Vi[v=?vi]
-NP[v=?name] -> Name[v=?name]
-S[v=<?vp(?np,?np)>] -> VP[v=?vp] NP[v=?np] NP[v=?np]
-S[v=<?s and ?s>] -> S[v=?s] and S[v=?s]
-S[v=<not ?s>] -> not S[v=?s]
-S[v=<?s or ?s>] -> S[v=?s] or S[v=?s]
-S[v=<?s and ?s>] -> S[v=?s] and S[v=?s]
-
-S[v=<?q(?s)>] -> Q[v=?q] S[v=?s]
 
 ###  Grammar
 
-S -> 'not' S
+S[v=<-?s>] -> 'not' S[v=?s]
 S -> S 'or' S
 S -> S 'and' S
 S -> 'if' S 'then' S
 S -> S 'if' S
-S -> NP VP
+S[v=<?vp(?np)>] -> NP[v=?np] VP[v=?vp]
 S -> QP VP
 S -> 'there' 'is' Pred
-NP -> Name
+NP[v=?name] -> Name[v=?name]
 QP -> Q N2
 N2 -> N1 RC
-N2 -> N1
+N2[v=?n1] -> N1[v=?n1]
 N1 -> Adj N1
-N1 -> N
+N1[v=?n] -> N[v=?n]
 RC -> 'that' VP
 
-VP -> Vi
+VP[v=?vi] -> Vi[v=?vi]
 VP -> Vt NP
 VP -> 'is' Pred
 VP -> 'is' 'not' Pred
-Pred -> Adj
+Pred[v=?adj] -> Adj[v=?adj]
 Pred -> 'a' N1
 
 ###  Lexicon
