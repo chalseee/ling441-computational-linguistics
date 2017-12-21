@@ -3,3 +3,13 @@ BONNIE => b
 FIDO => f
 MAX => m
 SPOT => s
+
+BARKER => {s}
+LIKES => {f}
+CHASES => {m, f}
+RED => {m, f}
+BLUE => {s}
+CAT => {m}
+DOG => {f}
+ANIMAL => {m}
+ORANGE => {}

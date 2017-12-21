@@ -9,7 +9,7 @@
 8 all x.(DOG(x) -> BARKER(x))
 9 all x.(DOG(x) -> LIKES(x, SPOT))
 10 all x.((BLUE(x) & DOG(x)) -> LIKES(x, MAX))
-11 exists x.((CAT(x) & RED(x)) -> CHASES(x, SPOT))
+11 exists x.((CAT(x) & RED(x))) -> CHASES(x, SPOT)
 12 all x.((DOG(x) & RED(x)) -> LIKES(x, SPOT))
 13 all x.(CAT(x) -> ANIMAL(x))
 14 exists x.(CAT(x) & ORANGE(x))
