@@ -6,7 +6,7 @@ SPOT => s
 
 BARKER => {s, f, b}
 LIKES => {(f, s), (b, s), (b, m)}
-CHASES => {(f, m), (a, s)}
+CHASES => {(f, m), (a, s), (m, s)}
 RED => {m, f}
 BLUE => {s, b}
 CAT => {m, a}
