@@ -1,29 +1,28 @@
 % start S
 
 ###  Grammar
-
-S[v=<-(?s)>] -> 'not' S[v=?s]
-S[v=<(?s) | (?s)>] -> S[v=?s] 'or' S[v=?s]
-S[v=<(?s) & (?s)>] -> S[v=?s] 'and' S[v=?s]
-S[v=<?s -> ?s>] -> 'if' S[v=?s] 'then' S[v=?s]
-S[v=<?s -> ?s>] -> S[v=?s] 'if' S[v=?s]
+S[v=<-?s>] -> 'not' S[v=?s]
+S[v=?s] -> S[v=?s] 'or' S[v=?s]
+S[v=?s] -> S[v=?s] 'and' S[v=?s]
+S[v=?s] -> 'if' S[v=?s] 'then' S[v=?s]
+S[v=?s] -> S[v=?s] 'if' S[v=?s]
 S[v=<?vp(?np)>] -> NP[v=?np] VP[v=?vp]
-S[v=<?vp(?qp)>] -> QP[v=?qp] VP[v=?vp]
-S[v=<?s>] -> 'there' 'is' Pred[v=?pred]
-NP[v=<?name>] -> Name[v=?name]
-QP[v=<?vp(?q)>] -> Q[v=?q] N2[v=?n2]
-N2[v=<?rc(?vp)>] -> N1[v=?n1] RC[v=?rc]
-N2[v=<?n1>] -> N1[v=?n1]
+S[v=(?qp + ?vp)] -> QP[v=?qp] VP[v=?vp]
+S[v=?s] -> 'there' 'is' Pred[v=?pred]
+NP[v=?name] -> Name[v=?name]
+QP[v=(?q + ?n2)] -> Q[v=?q] N2[v=?n2]
+N2[v=(?n1 + ?rc)] -> N1[v=?n1] RC[v=?rc]
+N2[v=?n1] -> N1[v=?n1]
 N1[v=<?adj(?n1)>] -> Adj[v=?adj] N1[v=?n1]
-N1[v=<?n>] -> N[v=?n]
-RC[v=<?vp>] -> 'that' VP[v=?vp]
+N1[v=?n] -> N[v=?n]
+RC[v=?vp] -> 'that' VP[v=?vp]
 
-VP[v=<?vi>] -> Vi[v=?vi]
+VP[v=?vi] -> Vi[v=?vi]
 VP[v=<?vt(?np)>] -> Vt[v=?vt] NP[v=?np]
-VP[v=<?pred>] -> 'is' Pred[v=?pred]
-VP[v=<?pred>] -> 'is' 'not' Pred[v=?pred]
-Pred[v=<?adj>] -> Adj[v=?adj]
-Pred[v=<?n1>] -> 'a' N1[v=?n1]
+VP[v=?pred] -> 'is' Pred[v=?pred]
+VP[v=?pred] -> 'is' 'not' Pred[v=?pred]
+Pred[v=?adj] -> Adj[v=?adj]
+Pred[v=?n1] -> 'a' N1[v=?n1]
 
 ###  Lexicon
 
